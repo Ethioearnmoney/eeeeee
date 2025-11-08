@@ -1,29 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="admin-container">
-    <h2>Admin Dashboard</h2>
-    <table id="userTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Password</th>
-          <th>Code</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  <script type="module" src="admin.js"></script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBQ-E4YrEChSdnpAfVpTjRWPsI_eM8d_VY",
+      authDomain: "ethioearn.firebaseapp.com",
+      projectId: "ethioearn",
+      storageBucket: "ethioearn.firebasestorage.app",
+      messagingSenderId: "780752809959",
+      appId: "1:780752809959:web:cb98a0547ef46148fcd742",
+      measurementId: "G-CVHL849LRK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadUsers() {
+      const userList = document.getElementById("userList");
+      userList.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "users"));
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <strong>${data.name}</strong> (${data.phone})<br>
+          Password: ${data.password}<br>
+          Code: ${data.verificationCode || "None"}<br>
+          Status: ${data.verified ? "✅ Verified" : "⏳ Pending"}<br>
+          <button onclick="approveUser('${docSnap.id}')">Approve</button>
+          <button onclick="rejectUser('${docSnap.id}')">Reject</button>
+          <hr>
+        `;
+        userList.appendChild(div);
+      });
+    }
+
+    async function approveUser(id) {
+      await updateDoc(doc(db, "users", id), { verified: true });
+      alert("User approved!");
+      loadUsers();
+    }
+
+    async function rejectUser(id) {
+      await updateDoc(doc(db, "users", id), { verified: false });
+      alert("User rejected!");
+      loadUsers();
+    }
+
+    window.approveUser = approveUser;
+    window.rejectUser = rejectUser;
+    window.onload = loadUsers;
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align:center; margin-top:50px;">
+  <h2>Admin Page</h2>
+  <div id="userList">Loading...</div>
 </body>
 </html>
