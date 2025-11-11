@@ -1,8 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Registration</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0072ff, #00c6ff);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0072ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #005ed9;
+    }
+  </style>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
@@ -20,35 +67,39 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function registerUser(event) {
-      event.preventDefault();
+    async function registerUser(e) {
+      e.preventDefault();
       const name = document.getElementById("name").value;
       const phone = document.getElementById("phone").value;
       const password = document.getElementById("password").value;
 
-      // Save to Firestore
-      await addDoc(collection(db, "users"), {
-        name,
-        phone,
-        password,
-        verified: false,
-        verificationCode: ""
-      });
-
-      alert("Registered successfully! Please enter your Telegram verification code.");
-      window.location.href = "verify.html";
+      try {
+        await addDoc(collection(db, "users"), {
+          name,
+          phone,
+          password,
+          verified: false,
+          verificationCode: ""
+        });
+        alert("Registered successfully! Now enter your Telegram verification code.");
+        window.location.href = "verify.html";
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
     }
 
     window.registerUser = registerUser;
   </script>
 </head>
-<body style="font-family: sans-serif; text-align:center; margin-top:50px;">
-  <h2>User Registration</h2>
-  <form onsubmit="registerUser(event)">
-    <input type="text" id="name" placeholder="Full Name" required><br><br>
-    <input type="tel" id="phone" placeholder="Ethiopian Phone (+251...)" required><br><br>
-    <input type="password" id="password" placeholder="Password" required><br><br>
-    <button type="submit">Register</button>
-  </form>
+<body>
+  <div class="card">
+    <h2>Register</h2>
+    <form onsubmit="registerUser(event)">
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="tel" id="phone" placeholder="+2519..." required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+  </div>
 </body>
 </html>
