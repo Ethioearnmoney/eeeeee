@@ -218,7 +218,7 @@
     const db = getFirestore(app);
     
     function isValidEthiopianPhone(phone) {
-      return /^\+2519\d{8}$/.test(phone);
+      return /^\09\d{8}$/.test(phone);
     }
     
     async function registerUser(e) {
@@ -271,7 +271,7 @@
         
         <div class="input-group">
           <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" placeholder="+2519XXXXXXXX" required>
+          <input type="tel" id="phone" placeholder="09XXXXXXXX" required>
           <i class="fas fa-phone"></i>
           <p class="error" id="error"></p>
         </div>
@@ -306,4 +306,5 @@
   </div>
 </body>
 </html>
+
 
