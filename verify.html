@@ -218,7 +218,7 @@
     const db = getFirestore(app);
     
     function isValidEthiopianPhone(phone) {
-      return /^\09\d{8}$/.test(phone);
+      return /^\+2519\d{8}$/.test(phone);
     }
     
     async function verifyUser(e) {
@@ -294,6 +294,7 @@
   </div>
 </body>
 </html>
+
 
 
 
